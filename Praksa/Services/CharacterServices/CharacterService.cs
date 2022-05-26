@@ -25,23 +25,23 @@ new Character { Id = 1, Name = "Sam"}
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
         {
             var ServiceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            characters.Add(_mapper.Map<Character>(newCharacter));
+            Character character = _mapper.Map<Character>(newCharacter);
+            character.Id = characters.Max(c => c.Id) + 1;
+            characters.Add(character);
             ServiceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return ServiceResponse;
         }
 
-        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters(Character newCharacter)
+      
+
+        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var ServiceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            characters.Add(newCharacter);
+            //characters.Add(newCharacter);
             ServiceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return ServiceResponse;
         }
 
-        public Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
