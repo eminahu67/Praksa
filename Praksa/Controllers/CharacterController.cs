@@ -5,6 +5,8 @@ using System.Linq;
 using Praksa.Services.CharacterServices;
 using System.Threading.Tasks;
 using Praksa.Dtos.Character;
+using Praksa.Dtos;
+
 
 namespace Praksa.Controllers;
 
@@ -12,39 +14,54 @@ namespace Praksa.Controllers;
 [Route("[controller]")]
 public class CharacterController : ControllerBase
 {
-    
+    private UpdateCharacterDto updateCharacter;
 
-    public ICharacterService characterService { get; }
+    public ICharacterService _characterService { get; }
 
-    public CharacterController( ICharacterService characterService)
+    public CharacterController(ICharacterService characterService)
     {
-        this.characterService = characterService;
+        this._characterService = characterService;
     }
 
     [HttpGet]
     [Route("GetAll")]
     public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get()
     {
-        return Ok(await characterService.GetAllCharacters());
+        return Ok(await _characterService.GetAllCharacters());
     }
     [HttpGet("{id}")]
 
     public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> GetSingle(int id)
     {
-        return Ok(await characterService.GetCharacterById(id));
+        return Ok(await _characterService.GetCharacterById(id));
     }
     [HttpPost]
     public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> AddCharacter(AddCharacterDto newCharacter)
     {
-        
-        return Ok(await characterService.AddCharacter(newCharacter));
 
-
+        return Ok(await _characterService.AddCharacter(newCharacter));
     }
-      
 
+    [HttpPut]
+    public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
+    {
+        var response = await _characterService.UpdateCharacter(updateCharacter);
+        if (response.Data == null)
+        {
+            return NotFound(response);
+        }
+        return Ok(response);
+    }
+    [HttpDelete("{id}")]
+
+    public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Delete(int id)
+    {
+        var response = await _characterService.DeleteCharacter(id);
+        if (response.Data == null)
+        {
+            return NotFound(response);
+        }
+        return Ok(response);
+    }
 }
-
-
-
 

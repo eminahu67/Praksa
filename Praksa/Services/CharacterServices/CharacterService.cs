@@ -2,6 +2,8 @@
 using Praksa.Models;
 using System.Threading.Tasks;
 using AutoMapper;
+using Praksa.Dtos;
+using System;
 
 namespace Praksa.Services.CharacterServices
 {
@@ -15,12 +17,12 @@ new Character { Id = 1, Name = "Sam"}
 
 
         private readonly IMapper _mapper;
-        public CharacterService(IMapper  mapper)
+        public CharacterService(IMapper mapper)
         {
-    
-        _mapper = mapper;
 
-    }
+            _mapper = mapper;
+
+        }
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
         {
@@ -32,7 +34,25 @@ new Character { Id = 1, Name = "Sam"}
             return ServiceResponse;
         }
 
-      
+        public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
+        {
+            var ServiceResponse = new ServiceResponse<List<GetCharacterDto>>();
+            try
+            {
+                Character character = characters.First(c => c.Id == id);
+                characters.Remove(character);
+                ServiceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+                
+
+                
+            }
+            catch (Exception ex)
+            {
+                ServiceResponse.Success = false;
+                ServiceResponse.Message = ex.Message;
+            }
+            return ServiceResponse;
+        }
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
@@ -46,9 +66,40 @@ new Character { Id = 1, Name = "Sam"}
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             var ServiceResponse = new ServiceResponse<GetCharacterDto>();
-           ServiceResponse.Data = _mapper.Map<GetCharacterDto> (characters.FirstOrDefault(c => c.Id == id));
+            ServiceResponse.Data = _mapper.Map<GetCharacterDto>(characters.FirstOrDefault(c => c.Id == id));
             return ServiceResponse;
         }
+
+        public async Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
+        { 
+            
+            var ServiceResponse = new ServiceResponse<GetCharacterDto>();
+            try
+            {
+                Character character = characters.FirstOrDefault(c => c.Id == updatedCharacter.Id);
+
+                character.Name = updatedCharacter.Name;
+                character.HitPoints = updatedCharacter.HitPoints;
+                character.Strenght = updatedCharacter.Strenght;
+                character.Defense = updatedCharacter.Defense;
+                character.Intelligence = updatedCharacter.Intelligence;
+                character.Class = updatedCharacter.Class;
+
+                ServiceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+            }
+            catch(Exception ex)
+            {
+                ServiceResponse.Success = false;
+                ServiceResponse.Message = ex.Message;
+            }
+            return ServiceResponse;
+        }
+       
+            
+
+
+
+     
     }
 }
 
