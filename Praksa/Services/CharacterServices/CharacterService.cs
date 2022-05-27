@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Praksa.Dtos;
 using System;
+using Praksa.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Praksa.Services.CharacterServices
 {
@@ -15,11 +17,12 @@ new Character(),
 new Character { Id = 1, Name = "Sam"}
     };
 
-
+        
         private readonly IMapper _mapper;
-        public CharacterService(IMapper mapper)
+        private readonly DataContext _context;
+        public CharacterService(IMapper mapper, DataContext context)
         {
-
+            _context = context;
             _mapper = mapper;
 
         }
@@ -57,8 +60,9 @@ new Character { Id = 1, Name = "Sam"}
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var ServiceResponse = new ServiceResponse<List<GetCharacterDto>>();
+            var dbCharacters = await _context.Characters.ToListAsync();
             //characters.Add(newCharacter);
-            ServiceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            ServiceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return ServiceResponse;
         }
 
@@ -66,7 +70,8 @@ new Character { Id = 1, Name = "Sam"}
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             var ServiceResponse = new ServiceResponse<GetCharacterDto>();
-            ServiceResponse.Data = _mapper.Map<GetCharacterDto>(characters.FirstOrDefault(c => c.Id == id));
+            var dbCharacter = await _context.Characters.FirstOrDefaultAsync(c => c.Id == id);
+            ServiceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter);
             return ServiceResponse;
         }
 

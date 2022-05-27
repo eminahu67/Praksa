@@ -1,12 +1,17 @@
 using Praksa.Services.CharacterServices;
 using AutoMapper;
+using Praksa.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddScoped<ICharacterService, CharacterService>();
-builder.Services.AddControllers();
+
+    
+    builder.Services.AddControllers();
+
 
 
 
@@ -17,7 +22,10 @@ builder.Services.AddSwaggerGen();
 //builder.Services.AddAutoMapper(typeof());
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddDbContext<DataContext>(options =>
+options.UseSqlServer("Server=localhost\\SQLEXPRESS; Database=Praksa; Trusted_Connection = true;")
+);
 
 
 var app = builder.Build();
