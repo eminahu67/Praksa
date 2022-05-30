@@ -28,7 +28,7 @@ options.UseSqlServer("Server=localhost\\SQLEXPRESS; Database=Praksa; Trusted_Con
 );
 
 
-var app = builder.Build();
+    var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
