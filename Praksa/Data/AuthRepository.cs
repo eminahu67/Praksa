@@ -12,15 +12,33 @@ namespace Praksa.Data
             _context = context;
         }
 
-        public Task<ServiceResponse<string>> Login(string username, string password)
+        public async Task<ServiceResponse<string>> Login(string username, string password)
         {
-            throw new NotImplementedException();
+            var response = new ServiceResponse<string>();
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.ToLower().Equals(username.ToLower()));
+                if(user == null)
+                {
+                response.Success = false;
+                response.Message = "User not found.";
+                
+                }
+            else if(!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            {
+                response.Success = false;
+                response.Message = " Wrong password .";
+            }
+
+            else
+            {
+                response.Data = user.Id.ToString();
+            }
+            return response;
         }
 
         public async Task<ServiceResponse<int>> Register(User user, string password)
         {
             ServiceResponse<int> response = new ServiceResponse<int>();
-            if(await UserExists(user.UserName))
+            if (await UserExists(user.UserName))
             {
                 response.Success = false;
                 response.Message = " User already exists.";
@@ -30,12 +48,12 @@ namespace Praksa.Data
 
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            user.PassworddHash = passwordHash;
+            user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            
+
             response.Data = user.Id;
             return response;
         }
@@ -51,11 +69,11 @@ namespace Praksa.Data
             {
                 return true;
             }
-                return false;
-                    
-                    
-                    
-        } 
+            return false;
+
+
+
+        }
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
@@ -65,5 +83,31 @@ namespace Praksa.Data
 
             }
         }
-    }  
+
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != passwordHash[i])
+                    {
+                        return false;
+                    }
+
+
+
+
+                }
+
+                return true;
+            }
+
+
+
+    }   }
+
+
 }

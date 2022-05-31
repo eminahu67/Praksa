@@ -9,7 +9,6 @@ namespace Praksa.Models
         public byte [] PasswordSalt { get; set; }
 
         public List<Character> Characters { get; set;}
-
-
+        public byte[] PasswordHash { get; internal set; }
     }
 }
