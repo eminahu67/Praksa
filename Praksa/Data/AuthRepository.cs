@@ -1,4 +1,5 @@
-﻿using Praksa.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Praksa.Models;
 
 namespace Praksa.Data
 {
@@ -18,6 +19,15 @@ namespace Praksa.Data
 
         public async Task<ServiceResponse<int>> Register(User user, string password)
         {
+            ServiceResponse<int> response = new ServiceResponse<int>();
+            if(await UserExists(user.UserName))
+            {
+                response.Success = false;
+                response.Message = " User already exists.";
+                return response;
+            }
+
+
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
             user.PassworddHash = passwordHash;
@@ -25,14 +35,26 @@ namespace Praksa.Data
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            ServiceResponse<int> response = new ServiceResponse<int>();
+            
             response.Data = user.Id;
             return response;
         }
 
-        public Task<bool> UserExists(string username)
+        public Task Register(User user, object password)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> UserExists(string username)
+        {
+            if (await _context.Users.AnyAsync(x => x.UserName.ToLower().Equals(username.ToLower())))
+            {
+                return true;
+            }
+                return false;
+                    
+                    
+                    
         } 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
