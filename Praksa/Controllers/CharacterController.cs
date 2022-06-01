@@ -6,11 +6,12 @@ using Praksa.Services.CharacterServices;
 using System.Threading.Tasks;
 using Praksa.Dtos.Character;
 using Praksa.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Praksa.Controllers
 {
-
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class CharacterController : ControllerBase
