@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-namespace Praksa.Models
+﻿namespace Praksa.Models
 {
     public class User
     {
         public int Id { get; set; }
-        public string UserName { get; set; }
-        public byte [] PassworddHash { get; set; }
-        public byte [] PasswordSalt { get; set; }
+        public string Username { get; set; }
 
-        public List<Character> Characters { get; set;}
-        public byte[] PasswordHash { get; internal set; }
+        public byte[] Password { get; set; }
+        public byte[] PasswordSalt { get; set; }
+
+        public List<Character> Characters { get; set; }
+
     }
 }

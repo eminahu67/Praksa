@@ -8,7 +8,7 @@ namespace Praksa.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            
+
         }
 
         public DbSet<Character> Characters { get; set; }

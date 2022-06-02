@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Praksa.Models;
-using System.Security.Claims;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿
 using System.IdentityModel.Tokens.Jwt;
-
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Praksa.Models;
 namespace Praksa.Data
 {
     public class AuthRepository : IAuthRepository
@@ -20,18 +19,20 @@ namespace Praksa.Data
         public async Task<ServiceResponse<string>> Login(string username, string password)
         {
             var response = new ServiceResponse<string>();
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.ToLower().Equals(username.ToLower()));
-                if(user == null)
-                {
-                response.Success = false;
-                response.Message = "User not found.";
-                 
-                }
-            else if(!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username.ToLower().Equals(username.ToLower()));
+            if (user == null)
             {
                 response.Success = false;
-                response.Message = " Wrong password .";
+                response.Message = "User not found.";
+
             }
+            else if (!VerifyPasswordHash(password, user.Password, user.PasswordSalt))
+            {
+                response.Success = false;
+                response.Message = "Wrong password.";
+            }
+           
+          
 
             else
             {
@@ -43,7 +44,7 @@ namespace Praksa.Data
         public async Task<ServiceResponse<int>> Register(User user, string password)
         {
             ServiceResponse<int> response = new ServiceResponse<int>();
-            if (await UserExists(user.UserName))
+            if (await UserExists(user.Username))
             {
                 response.Success = false;
                 response.Message = " User already exists.";
@@ -53,7 +54,7 @@ namespace Praksa.Data
 
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            user.PasswordHash = passwordHash;
+            user.Password = passwordHash;
             user.PasswordSalt = passwordSalt;
 
             _context.Users.Add(user);
@@ -70,7 +71,7 @@ namespace Praksa.Data
 
         public async Task<bool> UserExists(string username)
         {
-            if (await _context.Users.AnyAsync(x => x.UserName.ToLower().Equals(username.ToLower())))
+            if (await _context.Users.AnyAsync(x => x.Username.ToLower().Equals(username.ToLower())))
             {
                 return true;
             }
@@ -113,12 +114,12 @@ namespace Praksa.Data
 
         }
 
-        private string CreateToken (User user)
+        private string CreateToken(User user)
         {
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim (ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Name, user.Username)
             };
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
 
@@ -135,7 +136,7 @@ namespace Praksa.Data
 
             return tokenHandler.WriteToken(token);
         }
-    } 
+    }
 
 
 

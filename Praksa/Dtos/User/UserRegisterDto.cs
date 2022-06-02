@@ -1,11 +1,9 @@
-﻿namespace Praksa.Dtos.User
+﻿
+namespace Praksa.Dtos.User
 {
     public class UserRegisterDto
     {
-        public string? Username { get; set; }
-        public string? Password { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
-
-
-
 }

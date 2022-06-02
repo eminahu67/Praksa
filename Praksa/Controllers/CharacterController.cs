@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Praksa.Dtos.Character;
 using Praksa.Dtos;
 using Microsoft.AspNetCore.Authorization;
-
+using System.Security.Claims;
 
 namespace Praksa.Controllers
 {
+
     [Authorize]
     [ApiController]
     [Route("[controller]")]
@@ -23,10 +24,12 @@ namespace Praksa.Controllers
             _characterService = characterService;
         }
 
+        [AllowAnonymous]
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get()
         {
-            return Ok(await _characterService.GetAllCharacters());
+            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            return Ok(await _characterService.GetAllCharacters(id));
         }
 
         [HttpGet("{id}")]
