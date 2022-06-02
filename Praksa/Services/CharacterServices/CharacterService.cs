@@ -64,6 +64,11 @@ namespace Praksa.Services.CharacterServices
             return serviceResponse;
         }
 
+        public Task<object?> GetAllCharacters()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();

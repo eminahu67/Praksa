@@ -12,7 +12,7 @@ using Praksa.Data;
 namespace Praksa.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220530112937_UserCharacterRelationship")]
+    [Migration("20220602075933_UserCharacterRelationship")]
     partial class UserCharacterRelationship
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,15 +69,15 @@ namespace Praksa.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<byte[]>("Password")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<byte[]>("PassworddHash")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

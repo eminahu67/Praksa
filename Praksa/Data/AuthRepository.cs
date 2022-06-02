@@ -41,32 +41,32 @@ namespace Praksa.Data
             return response;
         }
 
+
         public async Task<ServiceResponse<int>> Register(User user, string password)
         {
             ServiceResponse<int> response = new ServiceResponse<int>();
             if (await UserExists(user.Username))
             {
                 response.Success = false;
-                response.Message = " User already exists.";
+                response.Message = "User already exists.";
                 return response;
             }
 
 
+
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+
+
 
             user.Password = passwordHash;
             user.PasswordSalt = passwordSalt;
 
+
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-
             response.Data = user.Id;
             return response;
-        }
-
-        public Task Register(User user, object password)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<bool> UserExists(string username)

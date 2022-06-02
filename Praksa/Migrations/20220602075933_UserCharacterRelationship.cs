@@ -12,8 +12,7 @@ namespace Praksa.Migrations
                 name: "UserId",
                 table: "Characters",
                 type: "int",
-                nullable: true
-                );
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Characters_UserId",
@@ -26,7 +25,7 @@ namespace Praksa.Migrations
                 column: "UserId",
                 principalTable: "Users",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -45,3 +44,4 @@ namespace Praksa.Migrations
         }
     }
 }
+
