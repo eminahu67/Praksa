@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
-using Praksa.Models;
 using System.Threading.Tasks;
 using Praksa.Dtos.Character;
-using Praksa.Dtos;
+using Praksa.Models;
 
-namespace Praksa.Services.CharacterServices
+namespace Praksa.Services.CharacterService
 {
     public interface ICharacterService
     {
-        Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters(int userId);
+        Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters();
         Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id);
         Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter);
-        Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updateCharacter);
+        Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updatedCharacter);
         Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id);
-        Task<object?> GetAllCharacters();
+        Task<ServiceResponse<GetCharacterDto>> AddCharacterSkill(AddCharacterSkillDto newCharacterSkill);
     }
 }

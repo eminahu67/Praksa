@@ -1,5 +1,6 @@
-﻿using Praksa.Models;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Praksa.Models;
+
 namespace Praksa.Data
 {
     public interface IAuthRepository

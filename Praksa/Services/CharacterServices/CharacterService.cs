@@ -6,27 +6,34 @@ using Praksa.Dtos;
 using System;
 using Praksa.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Praksa.Dtos.Character;
+using Praksa.Services.CharacterService;
 
-
-namespace Praksa.Services.CharacterServices
+namespace Praksa.Services.CharacterService
 {
     public class CharacterService : ICharacterService
     {
         private readonly IMapper _mapper;
         private readonly DataContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public CharacterService(IMapper mapper, DataContext context)
+        public CharacterService(IMapper mapper, DataContext context, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
             _mapper = mapper;
 
         }
-
+        private int GetUserId()=> int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
         {
+
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             Character character = _mapper.Map<Character>(newCharacter);
+            character.User = await _context.Users.FirstOrDefaultAsync(u => u.Id == GetUserId());
+            
             _context.Characters.Add(character);
             await _context.SaveChangesAsync();
             serviceResponse.Data = await _context.Characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToListAsync();
@@ -52,22 +59,19 @@ namespace Praksa.Services.CharacterServices
         }
 
         /// <summary>
-        /// e
+        /// 
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters(int userId)
+        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            var dbCharacters = await _context.Characters.Where(c => c.User.Id == userId).ToListAsync();
+            var dbCharacters = await _context.Characters.Where(c => c.User.Id == GetUserId()).ToListAsync();
             serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return serviceResponse;
         }
 
-        public Task<object?> GetAllCharacters()
-        {
-            throw new NotImplementedException();
-        }
+      
 
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
@@ -101,6 +105,11 @@ namespace Praksa.Services.CharacterServices
                 serviceResponse.Message = ex.Message;
             }
             return serviceResponse;
+        }
+
+        public Task<ServiceResponse<GetCharacterDto>> AddCharacterSkill(AddCharacterSkillDto newCharacterSkill)
+        {
+            throw new NotImplementedException();
         }
     }
 }

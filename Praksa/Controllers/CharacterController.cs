@@ -2,12 +2,13 @@
 using Praksa.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Praksa.Services.CharacterServices;
+using Praksa.Services.CharacterService;
 using System.Threading.Tasks;
 using Praksa.Dtos.Character;
 using Praksa.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Praksa.Services.CharacterService;
 
 namespace Praksa.Controllers
 {
@@ -28,7 +29,7 @@ namespace Praksa.Controllers
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get()
          {
-            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+           
             return Ok(await _characterService.GetAllCharacters());
         }
 

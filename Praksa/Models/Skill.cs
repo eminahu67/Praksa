@@ -2,12 +2,11 @@
 
 namespace Praksa.Models
 {
-    public class User
+    public class Skill
     {
         public int Id { get; set; }
-        public string Username { get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
+        public string Name { get; set; }
+        public int Damage { get; set; }
         public List<Character> Characters { get; set; }
     }
 }
