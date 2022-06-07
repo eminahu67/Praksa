@@ -22,7 +22,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace dotnet_rpg
+namespace Praksa
 {
     public class Startup
     {

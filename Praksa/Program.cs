@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Praksa;
 
-namespace dotnet_rpg
+namespace Praksa
+
 {
     public class Program
     {
